@@ -1,42 +1,52 @@
 @page "/"
 @using System.Diagnostics.CodeAnalysis
 
-<PageTitle>Home | My Portfolio</PageTitle>
+<PageTitle>Esteban Duque</PageTitle>
 
 <!-- HERO -->
-<section class="bg-slate-900 text-slate-100">
-    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+<section class="text-slate-100">
+    <div class="container-hero">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <!-- Left: intro -->
             <div>
-                <p class="text-indigo-400 text-sm font-semibold tracking-wide mb-2">home</p>
-                <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
-                    hi there. <span class="inline-block">👋</span>
+                <h1 class="text-2xl md:text-5xl font-bold leading-tight">
+                    Hi there, <br> I'm Esteban. 👋
                 </h1>
+                
+                <div class="flex items-center space-x-6 mt-4">
+                    <a href="/resume" class="inline-flex items-center h-9 px-3 border border-transparent text-sm font-medium rounded-md text-white bg-slate-700 hover:bg-slate-800">
+                        <span class="flex items-center">
+                            Resume
+                            <span class="icon icon-download icon--md ml-1" aria-hidden="true"></span>
+                        </span>
+                    </a>
+                    <a href="https://github.com/DDuQ" class="hover:text-slate-800">
+                        <span class="sr-only">GitHub</span>
+                        <span class="icon icon-github icon--lg" aria-hidden="true"></span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/dduq/" class="hover:text-slate-800">
+                        <span class="sr-only">LinkedIn</span>
+                        <span class="icon icon-linkedin icon--lg" aria-hidden="true"></span>
+                    </a>
+                </div>
+                
                 <p class="mt-4 text-lg text-slate-300">
-                    Backend by initiative, full‑stack by passion. I build and ship with .NET and friends.
+                    @(GetCurrentAge())yo Software Engineer specialized in backend development with .NET and C#.
                 </p>
 
-                <div class="mt-6 flex flex-wrap gap-3">
-                    <a href="/contact" class="inline-flex items-center px-5 py-2 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-500">Get in touch</a>
-                    <a href="/projects" class="inline-flex items-center px-5 py-2 rounded-md border border-slate-600 text-slate-100 hover:bg-slate-800">Projects</a>
-                    <a href="/about" class="inline-flex items-center px-5 py-2 rounded-md border border-slate-600 text-slate-100 hover:bg-slate-800">About</a>
-                </div>
             </div>
 
             <!-- Right: photo stack -->
             <div class="relative justify-self-center">
-                <div class="absolute -rotate-6 -top-4 -left-6 w-56 h-72 rounded-2xl overflow-hidden shadow-lg ring-1 ring-slate-700/60 bg-slate-800"></div>
-                <img class="relative w-56 h-72 rounded-2xl object-cover object-center overflow-hidden shadow-xl ring-1 ring-slate-700/60"
-                     src="logos/TeamInternational.jpg" alt="profile" />
+                <img class="relative h-72 object-fill object-cover object-center"
+                     src="profile-pic.png" alt="profile picture" />
             </div>
         </div>
     </div>
     </section>
 
 <!-- TIMELINE SECTION -->
-<section class="bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-5xl mx-auto">
+<section class="container-section">
         <!-- Tabs -->
         <div class="mb-4 flex rounded-xl border border-slate-700/40 bg-slate-900/60 p-1">
             <button class="w-1/2 rounded-lg px-4 py-2 text-sm font-semibold transition @(activeTab == "Work" ? "bg-slate-800 text-white" : "text-slate-300 hover:text-white")"
@@ -46,62 +56,56 @@
         </div>
 
         <!-- Panel -->
-        <div class="rounded-2xl border border-slate-700/40 bg-slate-900/60 p-6">
-            <div class="relative">
-                <!-- Vertical line -->
-                <div class="absolute left-6 top-0 h-full w-px bg-slate-600/40"></div>
+        <div class="rounded-2xl border border-slate-700/200 bg-slate-900/60 ">
+            <ul class="ml-10 border-l border-slate-400/200">
+                @foreach (var item in Items)
+                {
+                    <li class="relative py-4">
+                        <!-- Logo centered on the line -->
+                        <a target="_blank" href="@item.LogoUrl" class="absolute -left-7 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-white p-0.1">
+                            <span class="relative flex h-full w-full overflow-hidden rounded-full border border-slate-700/60">
+                                @if (!string.IsNullOrWhiteSpace(item.LogoUrl))
+                                {
+                                    <img class="h-full w-full bg-slate-700 object-contain" src="@item.LogoUrl" alt="@item.Company logo" />
+                                }
+                            </span>
+                        </a>
 
-                <div class="space-y-10">
-                    @foreach (var item in Items)
-                    {
-                        <div class="relative flex gap-4">
-                            <!-- Logo node -->
-                            <div class="relative z-10 shrink-0">
-                                <div class="h-10 w-10 overflow-hidden rounded-full ring-2 ring-slate-700/60 bg-white">
-                                    @if (!string.IsNullOrWhiteSpace(item.LogoUrl))
+                        <!-- Content -->
+                        <div class="ml-12">
+                            <time class="text-xs text-slate-400">@item.DateRange</time>
+                            <h2 class="font-semibold leading-none text-white">@item.Company</h2>
+                            @if (!string.IsNullOrWhiteSpace(item.JobRole))
+                            {
+                                <p class="text-sm text-slate-300">@item.JobRole</p>
+                            }
+
+                            @if (item.Bullets?.Any() == true)
+                            {
+                                <ul class="mt-2 ml-4 list-outside list-disc space-y-1">
+                                    @foreach (var b in item.Bullets)
                                     {
-                                        <img class="block h-full w-full object-cover object-center" src="@item.LogoUrl" alt="@item.Company logo" />
+                                        <li class="prose pr-8 text-sm text-slate-200 dark:prose-invert">@b</li>
+                                    }
+                                </ul>
+                            }
+
+                            @if (item.Badges?.Any() == true)
+                            {
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @foreach (var badge in item.Badges)
+                                    {
+                                        <span class="inline-flex items-center rounded-md border border-transparent bg-slate-700/50 px-2.5 py-0.5 text-xs font-medium text-slate-200 shadow hover:bg-slate-700/70">
+                                            @badge
+                                        </span>
                                     }
                                 </div>
-                            </div>
-
-                            <!-- Card -->
-                            <div class="flex-1 rounded-xl border border-slate-700/40 bg-slate-800/60 p-5">
-                                <p class="text-xs font-medium text-slate-300">@item.DateRange</p>
-                                <h3 class="mt-1 text-lg font-semibold text-white">@item.Company</h3>
-                                @if (!string.IsNullOrWhiteSpace(item.JobRole))
-                                {
-                                    <p class="text-sm text-slate-300">@item.JobRole</p>
-                                }
-
-                                @if (item.Bullets?.Any() == true)
-                                {
-                                    <ul class="mt-3 list-disc space-y-1 pl-5 text-slate-200">
-                                        @foreach (var b in item.Bullets)
-                                        {
-                                            <li>@b</li>
-                                        }
-                                    </ul>
-                                }
-
-                                @if (item.Badges?.Any() == true)
-                                {
-                                    <div class="mt-4 flex flex-wrap gap-2">
-                                        @foreach (var tag in item.Badges)
-                                        {
-                                            <span class="inline-flex items-center rounded-full bg-slate-700 px-2.5 py-0.5 text-xs font-medium text-slate-200">
-                                                @tag
-                                            </span>
-                                        }
-                                    </div>
-                                }
-                            </div>
+                            }
                         </div>
-                    }
-                </div>
-            </div>
+                    </li>
+                }
+            </ul>
         </div>
-    </div>
 </section>
 
 @code {
@@ -161,12 +165,21 @@
 
     private readonly List<TimelineItem> Education = new()
     {
-        new TimelineItem("Feb. 2018 – Aug. 2021", "Instituto Tecnológico Metropolitano",
+        new TimelineItem("Feb 2018 – Aug 2021", "Instituto Tecnológico Metropolitano",
             "Associate’s degree in Information Systems",
             Array.Empty<string>(),
             Array.Empty<string>(),
-            string.Empty)
+            "logos/itm.svg")
     };
 
     private IEnumerable<TimelineItem> Items => activeTab == "Work" ? Work : Education;
+
+    private int GetCurrentAge()
+    {
+        var today = DateTime.UtcNow;
+        
+        return today is { Month: >= 6, Day: >= 3 }
+            ? today.Year - 2000
+            : today.Year - 2001;
+    }
 }

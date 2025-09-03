@@ -112,3 +112,97 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* Container utilities */
+.container-main {
+    max-width: 64rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+    .container-main {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.container-hero {
+    max-width: 64rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 4rem 1rem;
+}
+
+@media (min-width: 640px) {
+    .container-hero {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-hero {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.container-section {
+    max-width: 64rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3rem 1rem;
+}
+
+@media (min-width: 640px) {
+    .container-section {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-section {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* Icon utilities to color external SVGs via CSS mask and currentColor */
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask: no-repeat center / contain;
+            mask: no-repeat center / contain;
+}
+.icon--sm { width: 1rem; height: 1rem; }
+.icon--md { width: 1.5rem; height: 1.5rem; }
+.icon--lg { width: 2rem; height: 2rem; }
+
+.icon-github {
+    -webkit-mask-image: url('/icons/github.svg');
+            mask-image: url('/icons/github.svg');
+}
+.icon-linkedin {
+    -webkit-mask-image: url('/icons/linkedin.svg');
+            mask-image: url('/icons/linkedin.svg');
+    /* Slightly reduce perceived size to match GitHub */
+    -webkit-mask-size: 92% 92%;
+            mask-size: 92% 92%;
+}
+.icon-download {
+    -webkit-mask-image: url('/icons/download.svg');
+            mask-image: url('/icons/download.svg');
+}

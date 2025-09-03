@@ -1,0 +1,27 @@
+@page "/resume"
+@layout MainLayout
+
+<div class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-4xl">
+        <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden">
+            <div class="p-6">
+                <div class="aspect-w-16 aspect-h-16">
+                    <embed 
+                        src="/resume.pdf" 
+                        type="application/pdf" 
+                        class="w-full h-[80vh] border border-slate-700 rounded"
+                        aria-label="Resume PDF" />
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <a 
+                        href="/resume.pdf" 
+                        download
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                        <img src="icons/download.svg" class="h-4 w-4 mr-2" alt="" />
+                        Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
