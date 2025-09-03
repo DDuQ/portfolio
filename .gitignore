@@ -45,7 +45,6 @@ Thumbs.db
 # Publish artifacts
 *.Publish.xml
 [Dd]ebug/
-[Rr]elease/
 
 # Resharper / DotCover
 _ReSharper*/
