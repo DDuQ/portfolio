@@ -1,0 +1,57 @@
+# Build outputs
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+
+# Coverage & test
+coverage/
+*.coverage*
+TestResult*/
+
+# .NET tooling
+*.user
+*.suo
+*.userprefs
+*.rsuser
+*.psess
+*.vsp*
+
+# JetBrains Rider
+.idea/
+*.iml
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+# Package restore caches
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+!**/[Pp]ackages/repositories.config
+
+# OS junk
+*.DS_Store
+Thumbs.db
+
+# Logs & caches
+*.log
+*.cache
+
+# Publish artifacts
+*.Publish.xml
+[Dd]ebug/
+[Rr]elease/
+
+# Resharper / DotCover
+_ReSharper*/
+*.DotSettings.user
+
+# Temporary
+~$*
+*.tmp
