@@ -1,0 +1,196 @@
+@page "/projects"
+@using System.Collections.Generic
+@using Portfolio.Models
+@using Portfolio.Services
+@inject ProjectService ProjectService
+
+@code {
+    private List<Project>? projects;
+    private List<string>? categories;
+    private string selectedCategory = "All";
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadProjects();
+            await LoadCategories();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred while loading projects. Please try again later.";
+            Console.Error.WriteLine(ex);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task LoadProjects()
+    {
+        var allProjects = await ProjectService.GetProjectsAsync();
+        projects = selectedCategory == "All" 
+            ? allProjects 
+            : allProjects.Where(p => p.Category == selectedCategory).ToList();
+    }
+
+    private async Task LoadCategories()
+    {
+        var categoryList = await ProjectService.GetProjectCategoriesAsync();
+        categoryList.Insert(0, "All");
+        categories = categoryList.Distinct().ToList();
+    }
+
+    private async Task OnCategoryChanged()
+    {
+        await LoadProjects();
+    }
+}
+
+<PageTitle>Projects | My Portfolio</PageTitle>
+
+<div class="bg-white">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                My Projects
+            </h2>
+            <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+                A collection of my recent work and side projects.
+            </p>
+        </div>
+
+        @if (isLoading)
+        {
+            <div class="text-center py-12">
+                <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading projects...
+                </div>
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="rounded-md bg-red-50 p-4 my-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            @errorMessage
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mt-12">
+                @if (categories != null && categories.Count > 1)
+                {
+                    <div class="mb-8">
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Filter by category</label>
+                        <select id="category" @onchange="async (e) => await OnCategoryChanged()" class="block w-64 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                    </div>
+                }
+
+                @if (projects == null || !projects.Any())
+                {
+                    <div class="text-center py-12">
+                        <p class="text-gray-500">No projects found in this category.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        @foreach (var project in projects)
+                        {
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg">
+                                <div class="h-48 overflow-hidden">
+                                    <img src="@project.ImageUrl" alt="@project.Title" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-sm font-medium text-indigo-600">@project.Category</p>
+                                            <h3 class="mt-1 text-xl font-semibold text-gray-900">@project.Title</h3>
+                                        </div>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            @project.Date.ToString("MMM yyyy")
+                                        </span>
+                                    </div>
+                                    <p class="mt-3 text-gray-600">@project.Description</p>
+                                    
+                                    @if (project.Technologies != null && project.Technologies.Any())
+                                    {
+                                        <div class="mt-4 flex flex-wrap gap-2">
+                                            @foreach (var tech in project.Technologies.Take(3))
+                                            {
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                    @tech
+                                                </span>
+                                            }
+                                            @if (project.Technologies.Length > 3)
+                                            {
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                    +@(project.Technologies.Length - 3) more
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    
+                                    <div class="mt-6 flex justify-between items-center">
+                                        @if (!string.IsNullOrEmpty(project.ProjectUrl))
+                                        {
+                                            <a href="@project.ProjectUrl" target="_blank" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                                View Project →
+                                            </a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(project.GithubUrl))
+                                        {
+                                            <a href="@project.GithubUrl" target="_blank" class="text-gray-400 hover:text-gray-500" title="View on GitHub">
+                                                <span class="sr-only">GitHub</span>
+                                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                                                </svg>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="bg-indigo-700">
+    <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+            <span class="block">Have a project in mind?</span>
+        </h2>
+        <p class="mt-4 text-lg leading-6 text-indigo-200">
+            I'm always interested in hearing about new projects and opportunities. Let's work together to bring your ideas to life.
+        </p>
+        <a href="/contact" class="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto">
+            Get in touch
+        </a>
+    </div>
+</div>
