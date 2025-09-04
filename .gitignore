@@ -2,6 +2,7 @@
 obj/
 [Bb]uild/
 [Ll]og/
+bin/net9.0/
 
 # Coverage & test
 coverage/
